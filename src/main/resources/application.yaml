@@ -1,3 +1,42 @@
 spring:
   application:
     name: simplified-payment-service
+
+  datasource:
+    url: jdbc:mysql://localhost:3307/payment_db
+    username: payment_user
+    password: payment_pass
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+
+  flyway:
+    enabled: true
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+
+external:
+  authorization:
+    url: https://util.devi.tools/api/v2/authorize
+  notification:
+    url: https://util.devi.tools/api/v1/notify
