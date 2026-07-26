@@ -14,4 +14,7 @@ object PaymentMessages {
     const val PASSWORD_MUST_HAVE_MIN_LENGTH = "Password must have at least 6 characters"
 
     const val USER_FULL_NAME_MUST_NOT_BE_BLANK = "User full name must not be blank"
+
+    const val WALLET_USER_ID_MUST_BE_POSITIVE = "Wallet userId must be positive"
+    const val WALLET_BALANCE_INSUFFICIENT = "Wallet balance is insufficient"
 }
