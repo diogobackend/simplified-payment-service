@@ -1,0 +1,5 @@
+package com.simplifiedpayment.core.domain.exception
+
+import com.simplifiedpayment.core.common.messages.PaymentMessages.MERCHANT_CANNOT_SEND_MONEY
+
+class MerchantCannotSendMoneyException : RuntimeException(MERCHANT_CANNOT_SEND_MONEY)

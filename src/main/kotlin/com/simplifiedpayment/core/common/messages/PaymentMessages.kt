@@ -22,4 +22,11 @@ object PaymentMessages {
     const val TRANSFER_PAYEE_ID_MUST_BE_POSITIVE = "Transfer payeeId must be positive"
     const val TRANSFER_PAYER_AND_PAYEE_MUST_BE_DIFFERENT = "Transfer payer and payee must be different"
     const val TRANSFER_VALUE_MUST_BE_POSITIVE = "Transfer value must be positive"
+
+    const val USER_NOT_FOUND_WITH_ID = "User not found with id"
+    const val WALLET_NOT_FOUND_WITH_USER_ID = "Wallet not found with userId"
+    const val USER_ALREADY_EXISTS_WITH_DOCUMENT = "User already exists with document"
+    const val USER_ALREADY_EXISTS_WITH_EMAIL = "User already exists with email"
+    const val MERCHANT_CANNOT_SEND_MONEY = "Merchant cannot send money"
+    const val TRANSFER_NOT_AUTHORIZED = "Transfer was not authorized"
 }
