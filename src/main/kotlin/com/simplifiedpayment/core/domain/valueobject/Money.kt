@@ -20,6 +20,8 @@ data class Money(
 
     fun isGreaterThanOrEqualTo(money: Money): Boolean = value >= money.value
 
+    fun isGreaterThan(money: Money): Boolean = value > money.value
+
     companion object {
         val ZERO = Money(BigDecimal.ZERO)
     }

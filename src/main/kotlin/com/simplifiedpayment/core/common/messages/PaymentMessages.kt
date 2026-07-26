@@ -17,4 +17,9 @@ object PaymentMessages {
 
     const val WALLET_USER_ID_MUST_BE_POSITIVE = "Wallet userId must be positive"
     const val WALLET_BALANCE_INSUFFICIENT = "Wallet balance is insufficient"
+
+    const val TRANSFER_PAYER_ID_MUST_BE_POSITIVE = "Transfer payerId must be positive"
+    const val TRANSFER_PAYEE_ID_MUST_BE_POSITIVE = "Transfer payeeId must be positive"
+    const val TRANSFER_PAYER_AND_PAYEE_MUST_BE_DIFFERENT = "Transfer payer and payee must be different"
+    const val TRANSFER_VALUE_MUST_BE_POSITIVE = "Transfer value must be positive"
 }
