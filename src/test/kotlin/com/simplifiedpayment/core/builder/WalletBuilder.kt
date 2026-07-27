@@ -1,4 +1,4 @@
-package com.simplifiedpayment.core.usecase.builder
+package com.simplifiedpayment.core.builder
 
 import com.simplifiedpayment.core.domain.model.Wallet
 import com.simplifiedpayment.core.domain.valueobject.Money
@@ -13,4 +13,9 @@ fun buildWalletDomain(
         walletId = walletId,
         userId = userId,
         balance = Money(balance),
+    )
+
+fun buildWalletDomainWithDefaults(userId: Long = 1L): Wallet =
+    Wallet(
+        userId = userId,
     )

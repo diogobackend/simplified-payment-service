@@ -1,4 +1,4 @@
-package com.simplifiedpayment.core.usecase.builder
+package com.simplifiedpayment.core.builder
 
 import com.simplifiedpayment.core.port.input.TransferMoneyInput
 import java.math.BigDecimal
