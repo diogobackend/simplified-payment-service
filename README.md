@@ -538,23 +538,7 @@ Erros previstos:
 
 ---
 
-# Decisões técnicas
 
-## Aplicação única
-
-A solução foi implementada como uma API única, evitando complexidade desnecessária para o escopo do desafio.
-
-## Arquitetura Hexagonal
-
-A arquitetura foi escolhida para separar domínio, casos de uso, entrada HTTP, persistência e integrações externas.
-
-## MySQL com Flyway
-
-O banco relacional foi escolhido por causa da natureza transacional da transferência.
-
-## BigDecimal para dinheiro
-
-Valores monetários devem ser tratados com `BigDecimal`, evitando `Double` e `Float`.
 
 ## Transação no fluxo de transferência
 
