@@ -48,12 +48,15 @@ class TransferMoneyUseCase(
                 value = Money(input.value),
             )
 
+        val debitedPayerWallet = payerWallet.debit(transfer.value)
+        val creditedPayeeWallet = payeeWallet.credit(transfer.value)
+
         if (!authorizeTransferPort.authorize(transfer)) {
             throw TransferNotAuthorizedException()
         }
 
-        walletRepositoryPort.save(payerWallet.debit(transfer.value))
-        walletRepositoryPort.save(payeeWallet.credit(transfer.value))
+        walletRepositoryPort.save(debitedPayerWallet)
+        walletRepositoryPort.save(creditedPayeeWallet)
 
         val completedTransfer =
             transferRepositoryPort.save(

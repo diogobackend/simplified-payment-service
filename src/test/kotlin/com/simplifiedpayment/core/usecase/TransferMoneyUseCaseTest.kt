@@ -160,8 +160,6 @@ class TransferMoneyUseCaseTest(
             payerBalance = INSUFFICIENT_PAYER_BALANCE,
         )
 
-        every { authorizeTransferPort.authorize(any()) } returns true
-
         assertThatThrownBy {
             transferMoneyUseCase.transfer(input)
         }.isInstanceOf(IllegalArgumentException::class.java)
@@ -171,13 +169,9 @@ class TransferMoneyUseCaseTest(
             userRepositoryPort.findById(input.payee)
             walletRepositoryPort.findByUserId(input.payer)
             walletRepositoryPort.findByUserId(input.payee)
-
-            authorizeTransferPort.authorize(
-                match { matchesTransfer(it, input, CREATED) },
-            )
         }
 
-        verifyNoTransferPersistenceOrNotification()
+        verifyNoAuthorizationPersistenceOrNotification()
     }
 
     @Test
