@@ -4,6 +4,7 @@ import com.simplifiedpayment.core.common.messages.PaymentMessages.INVALID_REQUES
 import com.simplifiedpayment.core.common.messages.PaymentMessages.MERCHANT_CANNOT_SEND_MONEY
 import com.simplifiedpayment.core.common.messages.PaymentMessages.RESOURCE_NOT_FOUND
 import com.simplifiedpayment.core.common.messages.PaymentMessages.TRANSFER_NOT_AUTHORIZED
+import com.simplifiedpayment.core.common.messages.PaymentMessages.VALIDATION_ERROR_SEPARATOR
 import com.simplifiedpayment.core.domain.exception.MerchantCannotSendMoneyException
 import com.simplifiedpayment.core.domain.exception.TransferNotAuthorizedException
 import com.simplifiedpayment.core.domain.exception.UserNotFoundException
@@ -54,7 +55,7 @@ class GlobalExceptionHandler {
             exception
                 .bindingResult
                 .fieldErrors
-                .joinToString("; ") { "${it.field}: ${it.defaultMessage}" }
+                .joinToString(VALIDATION_ERROR_SEPARATOR) { "${it.field}: ${it.defaultMessage}" }
 
         return buildErrorResponse(
             status = BAD_REQUEST,
