@@ -611,3 +611,564 @@ Confirma transação
 Envia notificação ao recebedor
 ```
 ---
+
+## Cenários de Teste via Swagger
+
+Esta seção descreve os principais cenários de teste da API de transferência.
+
+Endpoint utilizado:
+
+```http
+POST /transfer
+```
+
+Swagger:
+
+```text
+http://localhost:8080/swagger-ui.html
+```
+
+### Massa de dados local
+
+A aplicação possui uma massa local criada por migration para facilitar os testes manuais.
+
+Resumo da massa:
+
+| Tipo | Quantidade |
+|---|---:|
+| Usuários comuns com carteira | 17 |
+| Lojistas com carteira | 13 |
+| Usuários comuns sem carteira | 8 |
+| Lojistas sem carteira | 8 |
+| Carteiras de usuários comuns | 17 |
+| Carteiras de lojistas | 13 |
+
+> Usuário do tipo `COMMON` pode enviar dinheiro.  
+> Usuário do tipo `MERCHANT` não pode enviar dinheiro, apenas receber.
+
+---
+
+## Cenários de sucesso
+
+### Cenário 1 — Usuário comum(CPF) paga um lojista(CNPJ)
+
+**Objetivo:** validar uma transferência comum para lojista.
+
+**Payload:**
+
+```json
+{
+  "value": 100,
+  "payer": 1,
+  "payee": 101
+}
+```
+
+**Resultado esperado:**
+
+```text
+HTTP 201 Created
+status: COMPLETED
+```
+
+**Efeito esperado no banco:**
+
+| Usuário | Saldo antes | Saldo depois |
+|---|---:|---:|
+| Ana Silva | 1000.00 | 900.00 |
+| Padaria São João | 0.00 | 100.00 |
+
+
+**Evidência da Requisição**
+
+![img_3.png](img_3.png)
+
+**Evidência Banco**
+
+***Evidência da transferência no banco***
+![img_5.png](img_5.png)
+
+***Valores antes da transferência***
+![img_7.png](img_7.png)
+![img_2.png](img_2.png)
+
+***Valores após a transferência***
+![img_4.png](img_4.png)
+
+---
+
+### Cenário 2 — Usuário comum paga outro usuário comum, ambos CPF
+
+**Objetivo** validar uma transferência entre dois usuários comuns.
+
+**Payload**
+
+```json
+{
+  "value": 50,
+  "payer": 2,
+  "payee": 3
+}
+```
+
+**Resultado esperado:**
+
+```text
+HTTP 201 Created
+status: COMPLETED
+```
+
+**Efeito esperado no banco:**
+
+| Usuário | Saldo antes | Saldo depois |
+|---|---:|---:|
+| Bruno Costa | 500.00 | 450.00 |
+| Carla Mendes | 100.00 | 150.00 |
+
+**Evidência da Requisição**
+
+![img_10.png](img_10.png)
+
+**Evidência Banco**
+
+***Evidência da transferência no banco***
+![img_11.png](img_11.png)
+
+***Valores antes da transferência***
+![img_8.png](img_8.png)
+![img_9.png](img_9.png)
+
+***Valores após a transferência***
+![img_13.png](img_13.png)
+
+---
+
+### Cenário 3 — Transferência com centavos
+
+**Objetivo:** validar transferência com valor decimal.
+
+**Payload:**
+
+```json
+{
+  "value": 25.50,
+  "payer": 7,
+  "payee": 102
+}
+```
+
+**Resultado esperado:**
+
+```text
+HTTP 201 Created
+status: COMPLETED
+```
+
+**Efeito esperado no banco:**
+
+| Usuário | Saldo antes | Saldo depois |
+|---|---:|---:|
+| Helena Martins | 75.50 | 50.00 |
+| Farmácia Central | 250.00 | 275.50 |
+
+**Evidência da Requisição**
+
+![img_17.png](img_17.png)
+
+**Evidência Banco**
+
+***Evidência da transferência no banco***
+![img_18.png](img_18.png)
+
+***Valores antes da transferência***
+![img_15.png](img_15.png)
+![img_14.png](img_14.png)
+
+***Valores após a transferência***
+![img_19.png](img_19.png)
+
+---
+
+## Cenários de erro
+
+### Cenário 4 — Lojista(CNPJ) tentando enviar dinheiro para pessoa comun(CPF)
+
+**Objetivo:** validar que lojista não pode ser pagador.
+
+**Payload:**
+
+```json
+{
+  "value": 100,
+  "payer": 101,
+  "payee": 1
+}
+```
+
+**Resultado esperado:**
+
+```text
+HTTP 422 Unprocessable Content
+message: Merchant cannot send money
+```
+**Evidência Banco**
+![img_20.png](img_20.png)
+
+
+**Evidência da Requisição**
+
+![img_21.png](img_21.png)
+
+---
+
+### Cenário 5 — Saldo insuficiente
+
+**Objetivo:** validar que a transferência não é permitida quando o pagador não possui saldo suficiente.
+
+**Payload:**
+
+```json
+{
+  "value": 999999,
+  "payer": 1,
+  "payee": 101
+}
+```
+
+**Resultado esperado:**
+
+```text
+HTTP 400 Bad Request
+message: Wallet balance is insufficient
+```
+**Evidência Banco**
+![img_24.png](img_24.png)
+
+
+**Evidência da Requisição**
+
+![img_23.png](img_23.png)
+---
+
+### Cenário 6 — Usuário com saldo zero tentando pagar
+
+**Objetivo:** validar que usuário com saldo zero não consegue realizar transferência.
+
+**Payload:**
+
+```json
+{
+  "value": 1,
+  "payer": 5,
+  "payee": 101
+}
+```
+
+**Resultado esperado:**
+
+```text
+HTTP 400 Bad Request
+message: Wallet balance is insufficient
+```
+**Evidência Banco**
+![img_25.png](img_25.png)
+
+
+**Evidência da Requisição**
+
+![img_26.png](img_26.png)
+---
+
+### Cenário 7 — Pagador inexistente
+
+**Objetivo:** validar erro quando o pagador não existe na base.
+
+**Payload:**
+
+```json
+{
+  "value": 100,
+  "payer": 999,
+  "payee": 101
+}
+```
+
+**Resultado esperado:**
+
+```text
+HTTP 404 Not Found
+message: User not found with id: 999
+```
+**Evidência Banco**
+![img_27.png](img_27.png)
+
+
+**Evidência da Requisição**
+
+![img_28.png](img_28.png)
+---
+
+### Cenário 8 — Recebedor inexistente
+
+**Objetivo:** validar erro quando o recebedor não existe na base.
+
+**Payload:**
+
+```json
+{
+  "value": 100,
+  "payer": 1,
+  "payee": 999
+}
+```
+
+**Resultado esperado:**
+
+```text
+HTTP 404 Not Found
+message: User not found with id: 999
+```
+**Evidência Banco**
+![img_30.png](img_30.png)
+
+
+**Evidência da Requisição**
+
+![img_31.png](img_31.png)
+---
+
+### Cenário 9 — Pagador sem carteira
+
+**Objetivo:** validar erro quando o pagador existe, mas não possui carteira.
+
+**Payload:**
+
+```json
+{
+  "value": 100,
+  "payer": 201,
+  "payee": 101
+}
+```
+
+**Resultado esperado:**
+
+```text
+HTTP 404 Not Found
+message: Wallet not found with userId: 201
+```
+**Evidência Banco**
+![img_32.png](img_32.png)
+![img_33.png](img_33.png)
+
+
+**Evidência da Requisição**
+
+![img_34.png](img_34.png)
+---
+
+### Cenário 10 — Recebedor comum(CPF) sem carteira
+
+**Objetivo:** validar erro quando o recebedor comum existe, mas não possui carteira.
+
+**Payload:**
+
+```json
+{
+  "value": 100,
+  "payer": 1,
+  "payee": 201
+}
+```
+
+**Resultado esperado:**
+
+```text
+HTTP 404 Not Found
+message: Wallet not found with userId: 201
+```
+**Evidência Banco**
+![img_36.png](img_36.png)
+![img_37.png](img_37.png)
+
+
+**Evidência da Requisição**
+
+![img_38.png](img_38.png)
+---
+
+### Cenário 11 — Recebedor lojista(CNPJ) sem carteira
+
+**Objetivo:** validar erro quando o lojista existe, mas não possui carteira.
+
+**Payload:**
+
+```json
+{
+  "value": 100,
+  "payer": 1,
+  "payee": 301
+}
+```
+
+**Resultado esperado:**
+
+```text
+HTTP 404 Not Found
+message: Wallet not found with userId: 301
+```
+**Evidência Banco**
+![img_39.png](img_39.png)
+![img_40.png](img_40.png)
+
+
+**Evidência da Requisição**
+
+![img_41.png](img_41.png)
+---
+
+### Cenário 12 — Pagador e recebedor são o mesmo usuário
+
+**Objetivo:** validar que uma pessoa não pode transferir dinheiro para ela mesma.
+
+**Payload:**
+
+```json
+{
+  "value": 100,
+  "payer": 1,
+  "payee": 1
+}
+```
+
+**Resultado esperado:**
+
+```text
+HTTP 400 Bad Request
+message: Transfer payer and payee must be different
+```
+**Evidência Banco**
+![img_42.png](img_42.png)
+
+
+**Evidência da Requisição**
+
+![img_43.png](img_43.png)
+---
+
+### Cenário 13 — Valor zerado
+
+**Objetivo:** validar erro de entrada quando o valor da transferência é zero.
+
+**Payload:**
+
+```json
+{
+  "value": 0,
+  "payer": 1,
+  "payee": 101
+}
+```
+
+**Resultado esperado:**
+
+```text
+HTTP 400 Bad Request
+message contendo: value
+```
+
+**Evidência da Requisição**
+
+![img_44.png](img_44.png)
+
+---
+
+### Cenário 14 — Valor negativo
+
+**Objetivo:** validar erro de entrada quando o valor da transferência é negativo.
+
+**Payload:**
+
+```json
+{
+  "value": -10,
+  "payer": 1,
+  "payee": 101
+}
+```
+
+**Resultado esperado:**
+
+```text
+HTTP 400 Bad Request
+message contendo: value
+```
+**Evidência da Requisição**
+
+![img_45.png](img_45.png)
+---
+
+### Cenário 15 — Pagador inválido
+
+**Objetivo:** validar erro de entrada quando o identificador do pagador é inválido.
+
+**Payload:**
+
+```json
+{
+  "value": 100,
+  "payer": 0,
+  "payee": 101
+}
+```
+
+**Resultado esperado:**
+
+```text
+HTTP 400 Bad Request
+message contendo: payer
+```
+**Evidência da Requisição**
+
+![img_46.png](img_46.png)
+---
+
+### Cenário 16 — Recebedor inválido
+
+**Objetivo:** validar erro de entrada quando o identificador do recebedor é inválido.
+
+**Payload:**
+
+```json
+{
+  "value": 100,
+  "payer": 1,
+  "payee": 0
+}
+```
+
+**Resultado esperado:**
+
+```text
+HTTP 400 Bad Request
+message contendo: payee
+```
+**Evidência da Requisição**
+
+![img_47.png](img_47.png)
+---
+
+## Observação sobre autorização externa
+
+A API utiliza um serviço externo para autorização da transferência.
+
+Caso um cenário de sucesso retorne:
+
+```text
+HTTP 403 Forbidden
+message: Transfer was not authorized
+```
+
+isso significa que o autorizador externo negou ou não respondeu corretamente.
+
+Nesse caso, a transferência não será concluída e os saldos não serão alterados.
