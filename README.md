@@ -241,8 +241,25 @@ Resposta esperada em caso de sucesso:
   "status": "COMPLETED"
 }
 ```
+## Observabilidade
 
----
+A aplicação possui logs estruturados para facilitar a análise do fluxo de transferência.
+
+Os logs registram:
+
+- `traceId`
+- `spanId`
+- Nome da classe
+- Nome do método
+- Parâmetros de entrada
+- Retorno do método
+
+Exemplo de log:
+
+```text
+traceId=..., spanId=..., C=TransferController, M=transfer, parameters={arg0=TransferRequest(...)}, return=TransferResponse(...)
+```
+![img_51.png](docs/images/img_51.png)
 
 ## Swagger
 
@@ -665,19 +682,19 @@ status: COMPLETED
 
 **Evidência da Requisição**
 
-![img_3.png](img_3.png)
+![img_3.png](docs/images/img_3.png)
 
 **Evidência Banco**
 
 ***Evidência da transferência no banco***
-![img_5.png](img_5.png)
+![img_5.png](docs/images/img_5.png)
 
 ***Valores antes da transferência***
-![img_7.png](img_7.png)
-![img_2.png](img_2.png)
+![img_7.png](docs/images/img_7.png)
+![img_2.png](docs/images/img_2.png)
 
 ***Valores após a transferência***
-![img_4.png](img_4.png)
+![img_4.png](docs/images/img_4.png)
 
 ---
 
@@ -711,19 +728,19 @@ status: COMPLETED
 
 **Evidência da Requisição**
 
-![img_10.png](img_10.png)
+![img_10.png](docs/images/img_10.png)
 
 **Evidência Banco**
 
 ***Evidência da transferência no banco***
-![img_11.png](img_11.png)
+![img_11.png](docs/images/img_11.png)
 
 ***Valores antes da transferência***
-![img_8.png](img_8.png)
-![img_9.png](img_9.png)
+![img_8.png](docs/images/img_8.png)
+![img_9.png](docs/images/img_9.png)
 
 ***Valores após a transferência***
-![img_13.png](img_13.png)
+![img_13.png](docs/images/img_13.png)
 
 ---
 
@@ -757,19 +774,19 @@ status: COMPLETED
 
 **Evidência da Requisição**
 
-![img_17.png](img_17.png)
+![img_17.png](docs/images/img_17.png)
 
 **Evidência Banco**
 
 ***Evidência da transferência no banco***
-![img_18.png](img_18.png)
+![img_18.png](docs/images/img_18.png)
 
 ***Valores antes da transferência***
-![img_15.png](img_15.png)
-![img_14.png](img_14.png)
+![img_15.png](docs/images/img_15.png)
+![img_14.png](docs/images/img_14.png)
 
 ***Valores após a transferência***
-![img_19.png](img_19.png)
+![img_19.png](docs/images/img_19.png)
 
 ---
 
@@ -796,12 +813,12 @@ HTTP 422 Unprocessable Content
 message: Merchant cannot send money
 ```
 **Evidência Banco**
-![img_20.png](img_20.png)
+![img_20.png](docs/images/img_20.png)
 
 
 **Evidência da Requisição**
 
-![img_21.png](img_21.png)
+![img_21.png](docs/images/img_21.png)
 
 ---
 
@@ -826,12 +843,12 @@ HTTP 400 Bad Request
 message: Wallet balance is insufficient
 ```
 **Evidência Banco**
-![img_24.png](img_24.png)
+![img_24.png](docs/images/img_24.png)
 
 
 **Evidência da Requisição**
 
-![img_23.png](img_23.png)
+![img_23.png](docs/images/img_23.png)
 ---
 
 ### Cenário 6 — Usuário com saldo zero tentando pagar
@@ -855,12 +872,12 @@ HTTP 400 Bad Request
 message: Wallet balance is insufficient
 ```
 **Evidência Banco**
-![img_25.png](img_25.png)
+![img_25.png](docs/images/img_25.png)
 
 
 **Evidência da Requisição**
 
-![img_26.png](img_26.png)
+![img_26.png](docs/images/img_26.png)
 ---
 
 ### Cenário 7 — Pagador inexistente
@@ -884,12 +901,12 @@ HTTP 404 Not Found
 message: User not found with id: 999
 ```
 **Evidência Banco**
-![img_27.png](img_27.png)
+![img_27.png](docs/images/img_27.png)
 
 
 **Evidência da Requisição**
 
-![img_28.png](img_28.png)
+![img_28.png](docs/images/img_28.png)
 ---
 
 ### Cenário 8 — Recebedor inexistente
@@ -913,12 +930,12 @@ HTTP 404 Not Found
 message: User not found with id: 999
 ```
 **Evidência Banco**
-![img_30.png](img_30.png)
+![img_30.png](docs/images/img_30.png)
 
 
 **Evidência da Requisição**
 
-![img_31.png](img_31.png)
+![img_31.png](docs/images/img_31.png)
 ---
 
 ### Cenário 9 — Pagador sem carteira
@@ -942,13 +959,13 @@ HTTP 404 Not Found
 message: Wallet not found with userId: 201
 ```
 **Evidência Banco**
-![img_32.png](img_32.png)
-![img_33.png](img_33.png)
+![img_32.png](docs/images/img_32.png)
+![img_33.png](docs/images/img_33.png)
 
 
 **Evidência da Requisição**
 
-![img_34.png](img_34.png)
+![img_34.png](docs/images/img_34.png)
 ---
 
 ### Cenário 10 — Recebedor comum(CPF) sem carteira
@@ -972,13 +989,13 @@ HTTP 404 Not Found
 message: Wallet not found with userId: 201
 ```
 **Evidência Banco**
-![img_36.png](img_36.png)
-![img_37.png](img_37.png)
+![img_36.png](docs/images/img_36.png)
+![img_37.png](docs/images/img_37.png)
 
 
 **Evidência da Requisição**
 
-![img_38.png](img_38.png)
+![img_38.png](docs/images/img_38.png)
 ---
 
 ### Cenário 11 — Recebedor lojista(CNPJ) sem carteira
@@ -1002,13 +1019,13 @@ HTTP 404 Not Found
 message: Wallet not found with userId: 301
 ```
 **Evidência Banco**
-![img_39.png](img_39.png)
-![img_40.png](img_40.png)
+![img_39.png](docs/images/img_39.png)
+![img_40.png](docs/images/img_40.png)
 
 
 **Evidência da Requisição**
 
-![img_41.png](img_41.png)
+![img_41.png](docs/images/img_41.png)
 ---
 
 ### Cenário 12 — Pagador e recebedor são o mesmo usuário
@@ -1032,12 +1049,12 @@ HTTP 400 Bad Request
 message: Transfer payer and payee must be different
 ```
 **Evidência Banco**
-![img_42.png](img_42.png)
+![img_42.png](docs/images/img_42.png)
 
 
 **Evidência da Requisição**
 
-![img_43.png](img_43.png)
+![img_43.png](docs/images/img_43.png)
 ---
 
 ### Cenário 13 — Valor zerado
@@ -1063,7 +1080,7 @@ message contendo: value
 
 **Evidência da Requisição**
 
-![img_44.png](img_44.png)
+![img_44.png](docs/images/img_44.png)
 
 ---
 
@@ -1089,7 +1106,7 @@ message contendo: value
 ```
 **Evidência da Requisição**
 
-![img_45.png](img_45.png)
+![img_45.png](docs/images/img_45.png)
 ---
 
 ### Cenário 15 — Pagador inválido
@@ -1114,7 +1131,7 @@ message contendo: payer
 ```
 **Evidência da Requisição**
 
-![img_46.png](img_46.png)
+![img_46.png](docs/images/img_46.png)
 ---
 
 ### Cenário 16 — Recebedor inválido
@@ -1139,7 +1156,7 @@ message contendo: payee
 ```
 **Evidência da Requisição**
 
-![img_47.png](img_47.png)
+![img_47.png](docs/images/img_47.png)
 ---
 
 ## Observação sobre autorização externa

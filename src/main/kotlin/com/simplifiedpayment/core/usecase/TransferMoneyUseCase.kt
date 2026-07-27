@@ -1,5 +1,6 @@
 package com.simplifiedpayment.core.usecase
 
+import com.simplifiedpayment.app.configuration.logs.LogInfo
 import com.simplifiedpayment.core.domain.exception.MerchantCannotSendMoneyException
 import com.simplifiedpayment.core.domain.exception.TransferNotAuthorizedException
 import com.simplifiedpayment.core.domain.exception.UserNotFoundException
@@ -15,7 +16,7 @@ import com.simplifiedpayment.core.port.output.UserRepositoryPort
 import com.simplifiedpayment.core.port.output.WalletRepositoryPort
 import org.springframework.transaction.annotation.Transactional
 
-class TransferMoneyUseCase(
+open class TransferMoneyUseCase(
     private val userRepositoryPort: UserRepositoryPort,
     private val walletRepositoryPort: WalletRepositoryPort,
     private val transferRepositoryPort: TransferRepositoryPort,
@@ -23,6 +24,7 @@ class TransferMoneyUseCase(
     private val notifyPayeePort: NotifyPayeePort,
 ) : TransferMoneyPort {
     @Transactional
+    @LogInfo(logParameters = true, logReturn = true)
     override fun transfer(input: TransferMoneyInput): Transfer {
         val payer =
             userRepositoryPort.findById(input.payer)

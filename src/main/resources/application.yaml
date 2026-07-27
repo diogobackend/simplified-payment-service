@@ -20,6 +20,10 @@ server:
   port: 8080
 
 management:
+  otlp:
+    metrics:
+      export:
+        enabled: false
   endpoints:
     web:
       exposure:

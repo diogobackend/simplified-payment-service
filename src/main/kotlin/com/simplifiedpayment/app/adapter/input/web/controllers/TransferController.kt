@@ -3,6 +3,7 @@ package com.simplifiedpayment.app.adapter.input.web.controllers
 import com.simplifiedpayment.app.adapter.input.web.mappers.TransferWebMapper
 import com.simplifiedpayment.app.adapter.input.web.requests.TransferRequest
 import com.simplifiedpayment.app.adapter.input.web.responses.TransferResponse
+import com.simplifiedpayment.app.configuration.logs.LogInfo
 import com.simplifiedpayment.core.port.input.TransferMoneyPort
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -18,6 +19,7 @@ class TransferController(
     private val transferMoneyPort: TransferMoneyPort,
     private val transferWebMapper: TransferWebMapper,
 ) {
+    @LogInfo(logParameters = true, logReturn = true)
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun transfer(
