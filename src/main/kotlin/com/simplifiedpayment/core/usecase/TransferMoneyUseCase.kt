@@ -13,6 +13,7 @@ import com.simplifiedpayment.core.port.output.NotifyPayeePort
 import com.simplifiedpayment.core.port.output.TransferRepositoryPort
 import com.simplifiedpayment.core.port.output.UserRepositoryPort
 import com.simplifiedpayment.core.port.output.WalletRepositoryPort
+import org.springframework.transaction.annotation.Transactional
 
 class TransferMoneyUseCase(
     private val userRepositoryPort: UserRepositoryPort,
@@ -21,6 +22,7 @@ class TransferMoneyUseCase(
     private val authorizeTransferPort: AuthorizeTransferPort,
     private val notifyPayeePort: NotifyPayeePort,
 ) : TransferMoneyPort {
+    @Transactional
     override fun transfer(input: TransferMoneyInput): Transfer {
         val payer =
             userRepositoryPort.findById(input.payer)
