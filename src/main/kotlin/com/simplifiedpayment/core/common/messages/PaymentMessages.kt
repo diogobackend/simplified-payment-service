@@ -27,6 +27,11 @@ object PaymentMessages {
     const val WALLET_NOT_FOUND_WITH_USER_ID = "Wallet not found with userId"
     const val USER_ALREADY_EXISTS_WITH_DOCUMENT = "User already exists with document"
     const val USER_ALREADY_EXISTS_WITH_EMAIL = "User already exists with email"
+
     const val MERCHANT_CANNOT_SEND_MONEY = "Merchant cannot send money"
     const val TRANSFER_NOT_AUTHORIZED = "Transfer was not authorized"
+
+    const val RESOURCE_NOT_FOUND = "Resource not found"
+    const val INVALID_REQUEST = "Invalid request"
+    const val VALIDATION_ERROR_SEPARATOR = "; "
 }
