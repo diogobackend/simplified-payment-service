@@ -55,6 +55,10 @@ dependencies {
     testImplementation("org.assertj:assertj-core")
     testImplementation(kotlin("test"))
 
+    testImplementation(platform("org.testcontainers:testcontainers-bom:1.21.3"))
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.testcontainers:mysql")
+
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
