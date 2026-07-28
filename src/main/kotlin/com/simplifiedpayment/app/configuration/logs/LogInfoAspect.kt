@@ -20,28 +20,43 @@ class LogInfoAspect {
         logInfo: LogInfo,
     ): Any? {
         val signature = joinPoint.signature as MethodSignature
+
         val method =
             joinPoint.target.javaClass
                 .methods
                 .first { it.name == signature.method.name }
 
-        val result = joinPoint.proceed()
-
         val className =
             joinPoint.target.javaClass.simpleName
                 .substringBefore("$")
 
-        log.info {
-            buildLogMessage(
-                className = className,
-                method = method,
-                args = joinPoint.args,
-                result = result,
-                logInfo = logInfo,
-            )
-        }
+        return try {
+            val result = joinPoint.proceed()
 
-        return result
+            log.info {
+                buildLogMessage(
+                    className = className,
+                    method = method,
+                    args = joinPoint.args,
+                    result = result,
+                    logInfo = logInfo,
+                )
+            }
+
+            result
+        } catch (exception: Throwable) {
+            log.warn {
+                buildLogMessage(
+                    className = className,
+                    method = method,
+                    args = joinPoint.args,
+                    result = null,
+                    logInfo = logInfo,
+                ) + ", exception=${exception::class.simpleName}, message=${exception.message}"
+            }
+
+            throw exception
+        }
     }
 
     private fun buildLogMessage(
