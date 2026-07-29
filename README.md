@@ -11,26 +11,27 @@ https://github.com/PicPay/picpay-desafio-backend
 
 - [1 - Objetivo](#1---objetivo)
 - [2 - Stack técnica](#2---stack-técnica)
-- [3 - Arquitetura](#3---arquitetura)
-- [4 - Regras de negócio](#4---regras-de-negócio)
-- [5 - Domínio](#5---domínio)
-- [6 - Integrações externas](#6---integrações-externas)
-- [7 - API](#7---api)
-- [8 - Observabilidade](#8---observabilidade)
-- [9 - Swagger](#9---swagger)
-- [10 - Actuator](#10---actuator)
-- [11 - Como rodar localmente](#11---como-rodar-localmente)
-- [12 - Comandos mais usados](#12---comandos-mais-usados)
-- [13 - Principais cenários de teste](#13---principais-cenários-de-teste)
-- [14 - Tratamento de erros](#14---tratamento-de-erros)
-- [15 - Fluxo de Transação e notificação da transferência](#15---fluxo-de-transação-e-notificação-da-transferência)
-- [16 - Fluxo de transferência](#16---fluxo-de-transferência)
-- [17 - Cenários de Teste via Swagger](#17---cenários-de-teste-via-swagger)
-    - [17.1 - Cenários de sucesso](#171---cenários-de-sucesso)
-    - [17.2 - Cenários de erro](#172---cenários-de-erro)
-- [18 - Observação sobre autorização externa](#18---observação-sobre-autorização-externa)
-- [19 - Testes locais com WireMock](#19---testes-locais-com-wiremock)
-- [20 - Cenários de falha com WireMock](#20---cenários-de-falha-com-wiremock)
+- [3 - Modelagem do banco de dados - DER](#3---modelagem-do-banco-de-dados---der)
+- [4 - Arquitetura](#4---arquitetura)
+- [5 - Regras de negócio](#5---regras-de-negócio)
+- [6 - Domínio](#6---domínio)
+- [7 - Integrações externas](#7---integrações-externas)
+- [8 - API](#8---api)
+- [9 - Observabilidade](#9---observabilidade)
+- [10 - Swagger](#10---swagger)
+- [11 - Actuator](#11---actuator)
+- [12 - Como rodar localmente](#12---como-rodar-localmente)
+- [13 - Comandos mais usados](#13---comandos-mais-usados)
+- [14 - Principais cenários de teste](#14---principais-cenários-de-teste)
+- [15 - Tratamento de erros](#15---tratamento-de-erros)
+- [16 - Fluxo de Transação e notificação da transferência](#16---fluxo-de-transação-e-notificação-da-transferência)
+- [17 - Fluxo de transferência](#17---fluxo-de-transferência)
+- [18 - Cenários de Teste via Swagger](#18---cenários-de-teste-via-swagger)
+    - [18.1 - Cenários de sucesso](#181---cenários-de-sucesso)
+    - [18.2 - Cenários de erro](#182---cenários-de-erro)
+- [19 - Observação sobre autorização externa](#19---observação-sobre-autorização-externa)
+- [20 - Testes locais com WireMock](#20---testes-locais-com-wiremock)
+- [21 - Cenários de falha com WireMock](#21---cenários-de-falha-com-wiremock)
 ---
 
 ## 1 - Objetivo
@@ -65,11 +66,15 @@ Toda transferência precisa validar saldo, consultar autorizador externo e regis
 - OpenTelemetry
 
 ---
+## 3 - Modelagem do banco de dados - DER
+![doc1.png](docs/images/doc1.png)
+- Um usuário possui uma única carteira, e cada carteira pertence a um único usuário -> `1:1`
 
-## 3 - Arquitetura
+- Um usuário pode participar de várias transferências, seja como pagador ou receptor. Cada transferência, por sua vez, está vinculada apenas aos dois usuários envolvidos(pagador e receptor) -> `1:N`
+## 4 - Arquitetura
 
 Ultilizei **Arquitetura Hexagonal / Ports and Adapters**.
-
+![doc2.png](docs/images/doc2.png)
 Regra principal:
 
 ```text
@@ -113,7 +118,7 @@ src/main/kotlin/com/simplifiedpayment/
 
 ---
 
-## 4 - Regras de negócio
+## 5 - Regras de negócio
 
 - Usuários possuem nome completo, documento, e-mail, senha e carteira.
 - Documento e e-mail devem ser únicos.
@@ -130,7 +135,7 @@ src/main/kotlin/com/simplifiedpayment/
 
 ---
 
-## 5 - Domínio
+## 6 - Domínio
 
 ### User
 
@@ -209,7 +214,7 @@ FAILED
 
 ---
 
-## 6 - Integrações externas
+## 7 - Integrações externas
 
 ### Serviço autorizador
 
@@ -235,7 +240,7 @@ A notificação pode falhar sem desfazer a transferência, desde que o pagamento
 
 ---
 
-## 7 - API
+## 8 - API
 
 A API principal de transferência segue o contrato:
 
@@ -265,7 +270,7 @@ Resposta esperada em caso de sucesso:
   "status": "COMPLETED"
 }
 ```
-## 8 - Observabilidade
+## 9 - Observabilidade
 
 A aplicação possui logs estruturados para facilitar a análise do fluxo de transferência.
 
@@ -285,7 +290,7 @@ traceId=..., spanId=..., C=TransferController, M=transfer, parameters={arg0=Tran
 ```
 ![img_51.png](docs/images/img_51.png)
 
-## 9 - Swagger
+## 10 - Swagger
 
 A documentação completa da API estará disponível via Swagger.
 
@@ -303,7 +308,7 @@ http://localhost:8080/v3/api-docs
 
 ---
 
-## 10 - Actuator
+## 11 - Actuator
 
 A aplicação expõe endpoints operacionais.
 
@@ -327,7 +332,7 @@ GET /actuator/prometheus
 
 ---
 
-# 11 - Como rodar localmente
+# 12 - Como rodar localmente
 
 ## Clonar o repositório
 
@@ -412,7 +417,7 @@ SHOW TABLES;
 
 ---
 
-## 12 - Comandos mais usados
+## 13 - Comandos mais usados
 
 ## Subir infraestrutura local
 
@@ -537,7 +542,7 @@ xdg-open build/reports/jacoco/test/html/index.html
 
 ---
 
-## 13 - Principais cenários de teste
+## 14 - Principais cenários de teste
 
 - transferência com sucesso;
 - pagador inexistente;
@@ -552,7 +557,7 @@ xdg-open build/reports/jacoco/test/html/index.html
 
 ---
 
-## 14 - Tratamento de erros
+## 15 - Tratamento de erros
 
 A API deve retornar erros padronizados.
 
@@ -581,7 +586,7 @@ Erros previstos:
 
 
 
-## 15 - Fluxo de Transação e notificação da transferência
+## 16 - Fluxo de Transação e notificação da transferência
 
 A transferência precisa ser atômica:
 
@@ -597,7 +602,7 @@ Falha na notificação não deve desfazer a transferência.
 
 ---
 
-## 16 - Fluxo de transferência
+## 17 - Fluxo de transferência
 
 ```text
 Recebe requisição POST /transfer
@@ -637,7 +642,7 @@ Envia notificação ao recebedor
 ```
 ---
 
-## 17 - Cenários de Teste via Swagger
+## 18 - Cenários de Teste via Swagger
 
 Esta seção descreve os principais cenários de teste da API de transferência.
 
@@ -673,7 +678,7 @@ Resumo da massa:
 
 ---
 
-## 17.1 - Cenários de sucesso
+## 18.1 - Cenários de sucesso
 
 ### Cenário 1 — Usuário comum(CPF) paga um lojista(CNPJ)
 
@@ -814,7 +819,7 @@ status: COMPLETED
 
 ---
 
-## 17.2 - Cenários de erro
+## 18.2 - Cenários de erro
 
 ### Cenário 4 — Lojista(CNPJ) tentando enviar dinheiro para pessoa comun(CPF)
 
@@ -1183,7 +1188,7 @@ message contendo: payee
 ![img_47.png](docs/images/img_47.png)
 ---
 
-## 18 - Observação sobre autorização externa
+## 19 - Observação sobre autorização externa
 
 A API utiliza um serviço externo para autorização da transferência.
 
@@ -1198,7 +1203,7 @@ isso significa que o autorizador externo negou ou não respondeu corretamente.
 
 Nesse caso, a transferência não será concluída e os saldos não serão alterados
 
-## 19 - Testes locais com WireMock
+## 20 - Testes locais com WireMock
 
 A aplicação possui suporte a stubs locais usando WireMock para simular os serviços externos de autorização e notificação.
 
@@ -1288,7 +1293,7 @@ Com o profile `local` ativo e o WireMock rodando, foi validado que:
 - os logs da aplicação registraram o fluxo completo com traceId e spanId
 ```
 
-## 20 - Cenários de falha com WireMock
+## 21 - Cenários de falha com WireMock
 
 Além do fluxo de sucesso, também é possível validar cenários de falha usando os stubs locais do WireMock.
 
