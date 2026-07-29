@@ -1,16 +1,40 @@
 # Simplified Payment Service
 
-API RESTful para simular uma plataforma simplificada de pagamentos.
+API RESTful para simular uma plataforma simplificada de pagamentos
 
-A aplicação permite cadastrar usuários, manter saldo em carteira e realizar transferências entre usuários comuns e lojistas, seguindo regras de negócio de validação de saldo, autorização externa e notificação de pagamento.
+A aplicação permite realizar transferências entre usuários comuns e lojistas, seguindo regras de negócio de validação de saldo, autorização externa e notificação de pagamento.
 
+## Sumário
+
+- [1 - Objetivo](#1---objetivo)
+- [2 - Stack técnica](#2---stack-técnica)
+- [3 - Arquitetura](#3---arquitetura)
+- [4 - Regras de negócio](#4---regras-de-negócio)
+- [5 - Domínio](#5---domínio)
+- [6 - Integrações externas](#6---integrações-externas)
+- [7 - API](#7---api)
+- [8 - Observabilidade](#8---observabilidade)
+- [9 - Swagger](#9---swagger)
+- [10 - Actuator](#10---actuator)
+- [11 - Como rodar localmente](#11---como-rodar-localmente)
+- [12 - Comandos mais usados](#12---comandos-mais-usados)
+- [13 - Principais cenários de teste](#13---principais-cenários-de-teste)
+- [14 - Tratamento de erros](#14---tratamento-de-erros)
+- [15 - Fluxo de Transação e notificação da transferência](#15---fluxo-de-transação-e-notificação-da-transferência)
+- [16 - Fluxo de transferência](#16---fluxo-de-transferência)
+- [17 - Cenários de Teste via Swagger](#17---cenários-de-teste-via-swagger)
+    - [17.1 - Cenários de sucesso](#171---cenários-de-sucesso)
+    - [17.2 - Cenários de erro](#172---cenários-de-erro)
+- [18 - Observação sobre autorização externa](#18---observação-sobre-autorização-externa)
+- [19 - Testes locais com WireMock](#19---testes-locais-com-wiremock)
+- [20 - Cenários de falha com WireMock](#20---cenários-de-falha-com-wiremock)
 ---
 
-## Objetivo
+## 1 - Objetivo
 
-Este projeto implementa um fluxo simplificado de transferência de dinheiro entre usuários.
+Implementar um fluxo simplificado de transferência de dinheiro entre usuários.
 
-A regra principal é:
+Regra principal:
 
 ```text
 Usuários comuns podem enviar e receber dinheiro.
@@ -20,31 +44,28 @@ Toda transferência precisa validar saldo, consultar autorizador externo e regis
 
 ---
 
-## Stack técnica
+## 2 - Stack técnica
 
 - Kotlin
 - Java 21
-- Spring Boot 4
-- Gradle Kotlin DSL
-- Spring Web MVC
-- Spring Data JPA
-- Bean Validation
+- Spring Boot, Web, JPA
 - Flyway
 - MySQL
-- Spring Boot Actuator
-- Springdoc OpenAPI / Swagger
+- Swagger
 - Docker Compose
+- WireMock /stubs
 - JUnit 5
-- MockK
-- AssertJ
-- JaCoCo
+- Testes unitários e de integração
+- JaCoCo /relatorio de cobertura nos testes
 - ktlint
+- Logs estruturados, TraceId / SpanId
+- OpenTelemetry
 
 ---
 
-## Arquitetura
+## 3 - Arquitetura
 
-Este projeto segue **Arquitetura Hexagonal / Ports and Adapters**.
+Ultilizei **Arquitetura Hexagonal / Ports and Adapters**.
 
 Regra principal:
 
@@ -89,7 +110,7 @@ src/main/kotlin/com/simplifiedpayment/
 
 ---
 
-## Regras de negócio
+## 4 - Regras de negócio
 
 - Usuários possuem nome completo, documento, e-mail, senha e carteira.
 - Documento e e-mail devem ser únicos.
@@ -106,7 +127,7 @@ src/main/kotlin/com/simplifiedpayment/
 
 ---
 
-## Domínio
+## 5 - Domínio
 
 ### User
 
@@ -185,7 +206,7 @@ FAILED
 
 ---
 
-## Integrações externas
+## 6 - Integrações externas
 
 ### Serviço autorizador
 
@@ -211,7 +232,7 @@ A notificação pode falhar sem desfazer a transferência, desde que o pagamento
 
 ---
 
-## API
+## 7 - API
 
 A API principal de transferência segue o contrato:
 
@@ -241,7 +262,7 @@ Resposta esperada em caso de sucesso:
   "status": "COMPLETED"
 }
 ```
-## Observabilidade
+## 8 - Observabilidade
 
 A aplicação possui logs estruturados para facilitar a análise do fluxo de transferência.
 
@@ -261,7 +282,7 @@ traceId=..., spanId=..., C=TransferController, M=transfer, parameters={arg0=Tran
 ```
 ![img_51.png](docs/images/img_51.png)
 
-## Swagger
+## 9 - Swagger
 
 A documentação completa da API estará disponível via Swagger.
 
@@ -279,7 +300,7 @@ http://localhost:8080/v3/api-docs
 
 ---
 
-## Actuator
+## 10 - Actuator
 
 A aplicação expõe endpoints operacionais.
 
@@ -303,9 +324,9 @@ GET /actuator/prometheus
 
 ---
 
-# Como rodar localmente
+# 11 - Como rodar localmente
 
-## 1. Clonar o repositório
+## Clonar o repositório
 
 ```bash
 git clone https://github.com/diogobackend/simplified-payment-service.git
@@ -314,7 +335,7 @@ cd simplified-payment-service
 
 ---
 
-## 2. Subir o MySQL
+## Subir o MySQL
 
 ```bash
 docker compose up -d
@@ -334,7 +355,7 @@ simplified-payment-mysql
 
 ---
 
-## 3. Rodar a aplicação
+## Rodar a aplicação
 
 ```bash
 ./gradlew bootRun
@@ -348,7 +369,7 @@ http://localhost:8080
 
 ---
 
-## 4. Validar health check
+##  Validar health check
 
 ```bash
 curl http://localhost:8080/actuator/health
@@ -364,7 +385,7 @@ Resposta esperada:
 
 ---
 
-## 5. Validar Swagger
+##  Validar Swagger
 
 Acessar no navegador:
 
@@ -374,7 +395,7 @@ http://localhost:8080/swagger-ui.html
 
 ---
 
-## 6. Acessar o banco local
+## Acessar o banco local
 
 ```bash
 docker exec -it simplified-payment-mysql mysql -u payment_user -ppayment_pass payment_db
@@ -388,7 +409,7 @@ SHOW TABLES;
 
 ---
 
-# Comandos mais usados
+## 12 - Comandos mais usados
 
 ## Subir infraestrutura local
 
@@ -513,7 +534,7 @@ xdg-open build/reports/jacoco/test/html/index.html
 
 ---
 
-Principais cenários de teste:
+## 13 - Principais cenários de teste
 
 - transferência com sucesso;
 - pagador inexistente;
@@ -528,7 +549,7 @@ Principais cenários de teste:
 
 ---
 
-# Tratamento de erros
+## 14 - Tratamento de erros
 
 A API deve retornar erros padronizados.
 
@@ -557,7 +578,7 @@ Erros previstos:
 
 
 
-## Transação no fluxo de transferência
+## 15 - Fluxo de Transação e notificação da transferência
 
 A transferência precisa ser atômica:
 
@@ -565,7 +586,7 @@ A transferência precisa ser atômica:
 ou todo o débito/crédito é concluído, ou nada é persistido.
 ```
 
-## Notificação fora da regra crítica
+### Notificação fora da regra crítica
 
 A notificação acontece após a transferência concluída.
 
@@ -573,7 +594,7 @@ Falha na notificação não deve desfazer a transferência.
 
 ---
 
-# Fluxo de transferência
+## 16 - Fluxo de transferência
 
 ```text
 Recebe requisição POST /transfer
@@ -613,7 +634,7 @@ Envia notificação ao recebedor
 ```
 ---
 
-## Cenários de Teste via Swagger
+## 17 - Cenários de Teste via Swagger
 
 Esta seção descreve os principais cenários de teste da API de transferência.
 
@@ -649,7 +670,7 @@ Resumo da massa:
 
 ---
 
-## Cenários de sucesso
+## 17.1 - Cenários de sucesso
 
 ### Cenário 1 — Usuário comum(CPF) paga um lojista(CNPJ)
 
@@ -790,7 +811,7 @@ status: COMPLETED
 
 ---
 
-## Cenários de erro
+## 17.2 - Cenários de erro
 
 ### Cenário 4 — Lojista(CNPJ) tentando enviar dinheiro para pessoa comun(CPF)
 
@@ -1159,7 +1180,7 @@ message contendo: payee
 ![img_47.png](docs/images/img_47.png)
 ---
 
-## Observação sobre autorização externa
+## 18 - Observação sobre autorização externa
 
 A API utiliza um serviço externo para autorização da transferência.
 
@@ -1174,7 +1195,7 @@ isso significa que o autorizador externo negou ou não respondeu corretamente.
 
 Nesse caso, a transferência não será concluída e os saldos não serão alterados
 
-## Testes locais com WireMock
+## 19 - Testes locais com WireMock
 
 A aplicação possui suporte a stubs locais usando WireMock para simular os serviços externos de autorização e notificação.
 
@@ -1264,7 +1285,7 @@ Com o profile `local` ativo e o WireMock rodando, foi validado que:
 - os logs da aplicação registraram o fluxo completo com traceId e spanId
 ```
 
-## Cenários de falha com WireMock
+## 20 - Cenários de falha com WireMock
 
 Além do fluxo de sucesso, também é possível validar cenários de falha usando os stubs locais do WireMock.
 
