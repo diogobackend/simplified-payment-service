@@ -496,6 +496,8 @@ docker compose logs -f mysql
 ```bash
 xdg-open build/reports/jacoco/test/html/index.html
 ```
+Deixei com 100% de cobertura nos testes unitários e de integração
+![img.png](docs/images/jacoco.png)
 
 ---
 
