@@ -4,6 +4,9 @@ API RESTful para simular uma plataforma simplificada de pagamentos
 
 A aplicação permite realizar transferências entre usuários comuns e lojistas, seguindo regras de negócio de validação de saldo, autorização externa e notificação de pagamento.
 
+Origem do desafio:
+https://github.com/PicPay/picpay-desafio-backend
+
 ## Sumário
 
 - [1 - Objetivo](#1---objetivo)
