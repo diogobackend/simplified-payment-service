@@ -1172,4 +1172,158 @@ message: Transfer was not authorized
 
 isso significa que o autorizador externo negou ou não respondeu corretamente.
 
-Nesse caso, a transferência não será concluída e os saldos não serão alterados.
+Nesse caso, a transferência não será concluída e os saldos não serão alterados
+
+## Testes locais com WireMock
+
+A aplicação possui suporte a stubs locais usando WireMock para simular os serviços externos de autorização e notificação.
+
+Esse modo evita depender dos serviços externos reais durante testes manuais pelo Swagger ou Postman.
+
+### Quando usar
+
+Suba a aplicação com o profile `local` quando quiser testar a aplicação com serviços externos simulados:
+
+```bash
+./gradlew bootRun --args='--spring.profiles.active=local'
+```
+
+Com esse profile ativo, a aplicação utiliza o WireMock local para simular:
+
+- autorização da transferência
+- envio de notificação
+
+---
+
+### Evidências que o WireMock subiu corretamente
+
+
+URL que valida os stubs carregados
+
+```text
+http://localhost:8089/__admin/mappings
+```
+![img.png](docs/images/img.png)
+
+
+Stub de autorização aprovado
+
+```text
+http://localhost:8089/api/v2/authorize
+```
+![img_1.png](docs/images/aimg_1.png)
+
+Chamada isolada pelo stub ao serviço de notificação que retorna 204 NO Content
+![img_2.png](docs/images/aimg_2.png)
+
+### Evidência da transferência pelo Swagger
+
+```text
+http://localhost:8080/swagger-ui.html
+```
+![img_4.png](docs/images/aimg_4.png)
+
+
+### Evidência da notificação recebida no WireMock
+
+```text
+http://localhost:8089/__admin/requests
+```
+![img_6.png](docs/images/aimg_6.png)
+
+
+### Evidência nos logs da aplicação
+
+Após executar a transferência pelo Swagger, o terminal da aplicação registrou o fluxo completo.
+
+Logs validados:
+
+```text
+C=NotificationClientAdapter, M=notify
+C=TransferMoneyUseCase, M=transfer
+C=TransferController, M=transfer
+```
+![img_7.png](docs/images/aimg_7.png)
+
+
+---
+
+### Resultado final validado
+
+Com o profile `local` ativo e o WireMock rodando, foi validado que:
+
+```text
+- a aplicação iniciou com o profile local
+- os stubs foram carregados no WireMock
+- o autorizador simulado retornou authorization=true
+- a transferência foi executada pelo Swagger
+- a API retornou 201 CREATED
+- a transferência foi concluída com status COMPLETED
+- a aplicação enviou a notificação para o WireMock
+- o WireMock recebeu POST /api/v1/notify com status 204
+- os logs da aplicação registraram o fluxo completo com traceId e spanId
+```
+
+## Cenários de falha com WireMock
+
+Além do fluxo de sucesso, também é possível validar cenários de falha usando os stubs locais do WireMock.
+
+Esses cenários são úteis para comprovar o comportamento da aplicação quando os serviços externos de autorização ou notificação retornam erro ou negam a operação.
+
+---
+
+###  1 — Autorização negada
+
+```bash
+./gradlew bootRun --args='--spring.profiles.active=local --external.authorization.url=http://localhost:8089/api/v2/authorize/denied'
+```
+![img_9.png](docs/images/aimg_9.png)
+![img_10.png](docs/images/aimg_10.png)
+
+
+Esse cenário confirma que, quando o serviço externo nega a autorização, a transferência não é concluída.
+
+---
+
+### 2 — Erro no serviço de autorização
+
+
+```bash
+./gradlew bootRun --args='--spring.profiles.active=local --external.authorization.url=http://localhost:8089/api/v2/authorize/error'
+```
+![img_11.png](docs/images/aimg_11.png)
+![img_12.png](docs/images/aimg_12.png)
+
+Esse cenário confirma que, se o autorizador externo falhar, a aplicação trata a transferência como não autorizada.
+
+---
+
+### 3 — Erro no serviço de notificação
+
+```bash
+./gradlew bootRun --args='--spring.profiles.active=local --external.notification.url=http://localhost:8089/api/v1/notify/error'
+```
+
+A transferência é criada normalmente, mesmo quando o serviço externo de notificação retorna erro.
+
+![img_13.png](docs/images/aimg_13.png)
+![img_14.png](docs/images/aimg_14.png)
+---
+
+Evidência nos logs
+![img_16.png](docs/images/aimg_16.png)
+Isso evidencia que, a aplicação não desfaz a transferência quando a notificação falha, mantendo o status COMPLETED.
+
+
+
+### Resultado validado
+
+Com os stubs de falha do WireMock, foram validados os seguintes comportamentos:
+
+```text
+- autorização negada retorna 403
+- erro no autorizador retorna 403
+- erro na notificação não impede a transferência
+- transferência continua com status COMPLETED quando apenas a notificação falha
+- os logs registram o fluxo e as exceções com traceId e spanId
+```

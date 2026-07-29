@@ -1,9 +1,9 @@
 package com.simplifiedpayment
 
-import com.simplifiedpayment.integrationsTest.support.ExternalClientsTestConfiguration
-import com.simplifiedpayment.integrationsTest.support.PaymentDatabaseSupport
-import com.simplifiedpayment.integrationsTest.support.TestAuthorizeTransferPort
-import com.simplifiedpayment.integrationsTest.support.TestNotifyPayeePort
+import com.simplifiedpayment.integration.support.ExternalClientsTestConfiguration
+import com.simplifiedpayment.integration.support.PaymentDatabaseSupport
+import com.simplifiedpayment.integration.support.TestAuthorizeTransferPort
+import com.simplifiedpayment.integration.support.TestNotifyPayeePort
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest

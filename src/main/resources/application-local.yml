@@ -1,0 +1,11 @@
+external:
+  authorization:
+    url: http://localhost:8089/api/v2/authorize
+  notification:
+    url: http://localhost:8089/api/v1/notify
+
+management:
+  otlp:
+    metrics:
+      export:
+        enabled: false

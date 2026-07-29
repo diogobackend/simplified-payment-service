@@ -1,5 +1,7 @@
 package com.simplifiedpayment.app.adapter.output.client
 
+import com.simplifiedpayment.app.configuration.logs.LogInfo
+import com.simplifiedpayment.app.configuration.logs.LogParameter
 import com.simplifiedpayment.core.domain.model.Transfer
 import com.simplifiedpayment.core.port.output.AuthorizeTransferPort
 import org.springframework.beans.factory.annotation.Value
@@ -12,7 +14,11 @@ class AuthorizationClientAdapter(
     @Value("\${external.authorization.url}")
     private val authorizationUrl: String,
 ) : AuthorizeTransferPort {
-    override fun authorize(transfer: Transfer): Boolean =
+    @LogInfo(logParameters = true, logReturn = true)
+    override fun authorize(
+        @LogParameter(name = "transfer")
+        transfer: Transfer,
+    ): Boolean =
         runCatching {
             restClientBuilder
                 .build()

@@ -1,4 +1,4 @@
-package com.simplifiedpayment.integrationsTest.support
+package com.simplifiedpayment.integration.support
 
 import com.simplifiedpayment.core.domain.model.Transfer
 import com.simplifiedpayment.core.port.output.AuthorizeTransferPort

@@ -11,6 +11,15 @@ services:
       - "3307:3306"
     volumes:
       - simplified-payment-mysql-data:/var/lib/mysql
+  wiremock:
+    image: wiremock/wiremock:3.13.2
+    container_name: simplified-payment-wiremock
+    ports:
+      - "8089:8080"
+    volumes:
+      - ./src/test/kotlin/com/simplifiedpayment/integration/wiremock/mappings:/home/wiremock/mappings
+    command:
+      - "--verbose"
 
 volumes:
   simplified-payment-mysql-data:

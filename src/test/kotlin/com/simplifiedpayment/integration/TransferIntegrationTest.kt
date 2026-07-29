@@ -1,4 +1,4 @@
-package com.simplifiedpayment.integrationsTest
+package com.simplifiedpayment.integration
 
 import com.simplifiedpayment.IntegrationTest
 import org.hamcrest.Matchers.containsString

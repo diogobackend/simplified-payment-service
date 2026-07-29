@@ -1,4 +1,4 @@
-package com.simplifiedpayment.integrationsTest.support
+package com.simplifiedpayment.integration.support
 
 import org.assertj.core.api.Assertions.assertThat
 import org.springframework.jdbc.core.JdbcTemplate
